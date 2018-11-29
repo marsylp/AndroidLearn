@@ -1,3 +1,19 @@
-第1步：新建一个Android Studio 工程 JniHelloWorld。新建一个MyJni.java文件。 
-https://img-blog.csdn.net/20170510223429945?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvbGVpbGlmZW5neGluZ213/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast
-MyJni.java
+
+
+1. 标题
+为了获得上面的 “1. 标题”， 在 Markdown 编辑器里输入：
+
+# 1. 标题
+“#” 后最好加个空格。除此之外，还有 5 级标题，依次有不同的字体大小，即
+
+## 二级标题
+### 三级标题
+#### 四级标题
+##### 五级标题
+###### 六级标题
+这样就有：
+
+作者：district10
+链接：https://www.jianshu.com/p/7bd23251da0a
+來源：简书
+简书著作权归作者所有，任何形式的转载都请联系作者获得授权并注明出处。
