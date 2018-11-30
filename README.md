@@ -1,5 +1,4 @@
 Markdown 语法
-
 ```javascript
 function syntaxHighlighting() {
   var n = 33;
