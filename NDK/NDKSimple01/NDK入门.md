@@ -63,7 +63,7 @@ JNIEXPORT jstring JNICALL Java_com_mars_ndksimple_HelloNDK_sayHello
 
 ```
 然后在app/src/main文件夹下新建一个jni文件夹,并把刚生成的.h文件移动到jni文件中。
-####Step-4. 创建.c、Android.mk、Application.mk文件
+#### Step-4. 创建.c、Android.mk、Application.mk文件
 根据*.h头文件内容和JNI语法撰写*.c，如下：
 
 ```
@@ -91,7 +91,7 @@ Application.mk
 ```
 APP_ABI:=all
 ```
-####Step-5. 生成.so库
+#### Step-5. 生成.so库
 回到终端，cd切换到jni文件下输入如下命令:ndk-build生成在Application.mk中配置各ABI架构下的so库，so库文件名就是在Android.mk中LOCAL_MODULE所指定的。如下图:
 
 ![](https://github.com/marsylp/AndroidLearn/blob/master/NDK/NDKSimple01/image/HelloNDK-03.png)
@@ -109,7 +109,7 @@ android {
     }
 }
 ```
-####Step-6. 在Activity中调用
+#### Step-6. 在Activity中调用
 ````
 HelloNDK helloNDK = new HelloNDK();
 String hello = helloNDK.sayHello();
