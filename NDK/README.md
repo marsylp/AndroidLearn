@@ -1,4 +1,4 @@
-#NDK入门
+# NDK入门
 
 ## 1、创建so库
 * Step-1. 创建一个*.java类，然后编译这个*.java生成*.class文件，使用javah -jni ***** (*.class 目录下的*.java类名) 生成*.h，例如：
@@ -305,8 +305,9 @@ Java_com_mars_ndksimple_CounterNative_nativeGetValue(JNIEnv *env, jobject thiz)
 ## 4、从C创建Java对象
 * Step-1: 在Java创建一个抽象类ANativeSimple，一个ActNative类，一个ResultValue类，以及一个ANativeSimple的子类NativieSimpleSub。其类图如下:
 
-*  Step-2: 生成*.h文件，并创建Android.mk,Appliction.mk以及相应的 *.c文件，在*.c文件中最关键的操作如下：
+![](https://github.com/marsylp/AndroidLearn/blob/master/NDK/NDKSimple01/image/UML-01.png)
 
+*  Step-2: 生成*.h文件，并创建Android.mk,Appliction.mk以及相应的 *.c文件，在*.c文件中最关键Java_com_mars_ndksimple_ANativeSimple_nativeSetup方法操作如下：
 
 	1、根据特定的类，得到clazz.
 	```
