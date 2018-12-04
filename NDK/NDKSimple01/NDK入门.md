@@ -116,4 +116,6 @@ String hello = helloNDK.sayHello();
 Log.i("NdkSimple", "sayHello:" + hello);
 ````
 
-
+#### 总结：
+由于Java层的类别是在VM上执行的，而本地模块则不是在VM上执行，所以Java程序要求VM去加载所指定的C模块时，就使用如下指令：
+System.loadLibrary(*.so的名称)；
