@@ -371,7 +371,7 @@ Java程序可能会有多个线程同时先后进入同一个本地函数里执�
 ```env->MonitorExit(syncObj);```
 
 ## 5、本地线程进入Java层
-部分代码示例：
+主要代码示例：
 
 ```
 void JNICALL Java_com_misoo_counter_CounterNative_nativeExec (JNIEnv *env, jobject thiz, jint numb){
