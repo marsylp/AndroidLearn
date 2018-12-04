@@ -357,3 +357,40 @@ Java_com_mars_ndksimple_ActNative_nativeExec(JNIEnv *env, jclass clazz)
 ```
 *  Step-3: 生成*.so库。
 *  Step-4: 在Activity中创建NativieSimpleSub对象，然后调用ActNative类的本地方法nativeExec()生成ResultValue类的对象即可调用其getValue()方法获取值。
+
+## 4、多个Java线程进入本地函数
+每一个线程第一次进入VM调用本地函数时，VM会替它诞生一个相对映的JNIEnv对象，此对象可以存储该线程相关的数据值。如此可以避免线程因共享对象或数据而引发的线程冲突问题，也就有效提升了JNI环境下的多线程安全性。
+	
+Java程序可能会有多个线程同时先后进入同一个本地函数里执行。有些平台充许你将私有的数据存储于JNIEnv的对象里，避免共享问题，但有些平台则否。所以你的私有数据不能或不想将它存于JNIEnv对象里，而是放在一般的变量里，就必须自己注意变量共享而产生的线程安全问题了。
+
+然而JNI提供了保证线程安全的机制。
+在进入需要保护的程序时，调用:
+```env->MonitorEnter(syncObj);```
+这样当其他线程进来时就只能停下等待。
+在执行完需要保护的程序时调用：
+```env->MonitorExit(syncObj);```
+
+## 5、本地线程进入Java层
+部分代码示例：
+
+```
+void JNICALL Java_com_misoo_counter_CounterNative_nativeExec (JNIEnv *env, jobject thiz, jint numb){
+n = numb;
+//创建线程
+pthread_create( &thread, NULL, trRun, NULL);
+}
+void* trRun( void* ){
+int status;
+JNIEnv *env; bool isAttached = false;
+status = jvm->GetEnv((void **) &env, JNI_VERSION_1_4); if(status < 0) {
+//向VM登记，要求VM创建一个JNIEnv对象，并将其指针值存入env里
+status = jvm->AttachCurrentThread(&env, NULL); if(status < 0) return NULL;
+isAttached = true;
+}
+sum = 0;
+for(int i = 0; i<=n; i++) sum += i;
+env->CallStaticVoidMethod(mClass, mid, sum);
+if(isAttached) jvm->DetachCurrentThread(); 
+return NULL;
+}
+```
