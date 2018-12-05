@@ -1,6 +1,6 @@
 ## 认识进程与IPC架构
 
-1.什么事IPC通信
+1.什么是IPC通信
 IPC通信是跨越两个不同进程之间的通信。一般而言，一个Android应用程序里的各组件（如Activity、Service）都在同一个进程里执行。这种在同一个进程内的通信，又称为短程通信，意味着，两个Activity在同一个进程里执行。相对地，远程通信的意思是：两个组件分别在不同的进程里执行；两者之间是IPC通信，又称远程通信。
 
 * IPC通信的效率
@@ -34,12 +34,13 @@ Binder基类的很重要的目的就是支撑跨进程调用Service，也就是�
     — 这是一个本地函数，让JNI模块来实现这个函数。Binder()构造函数会调用这个init()本地函数。
 
 UML图形表示：
+ ![](https://github.com/marsylp/AndroidLearn/blob/master/ProcessAndIPC/imags/IBinder1.png)
  
 BinderProxy基类
 这个类也是定义在Binder.java里面的。由于跨进程通信时，并不是从Java层直接沟通，而是通过底层的BinderDriver驱动来沟通，所以Client端的Java类别，必须通过BinderProxy分身的IBinder接口，转而调用JNI本地模块来链接到底层BInderDriver驱动服务，进而调用到正在另一个进程里执行的Service。当Client端通过IBinder接口而调用到BinderProxy的transact()函数，就调用到其JNI本地模块的transact()函数，就能连接到底层BinderDriver驱动服务里。
 
 5.使用IBinder接口
-
+![](https://github.com/marsylp/AndroidLearn/blob/master/ProcessAndIPC/imags/IBinder2.png)
 
 6.IPC通信的三步骤
 ·调用startService()
