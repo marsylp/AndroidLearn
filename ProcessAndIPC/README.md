@@ -44,8 +44,7 @@ BinderProxy基类
 
 ![](https://github.com/marsylp/AndroidLearn/blob/master/ProcessAndIPC/imags/IBinder2.png)
 
-6.IPC通信的三步骤
-·调用startService()
+6.IPC通信的步骤
 ·调用bindService()
 ·调用IBinder接口的transact()
 Activity调用IBinder接口的transact()函数，通过底层BinderDriver驱动而间接调用到Binder基类的execTransact()函数，转而调用继承Binder类的onTransact()函数。
