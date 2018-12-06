@@ -1,10 +1,7 @@
 # NDK入门
-
 ## 1、创建so库
-* Step-1. 创建一个*.java类，然后编译这个*.java生成*.class文件，使用javah -jni ***** (*.class 目录下的*.java类名) 生成*.h，例如：
-
-HelloNDK.java
-
+* Step-1. 创建一个*.java类，然后编译这个*.java生成*.class文件，使用javah -jni ***** (*.class 目录下的*.java类名) 生成*.h，例如：  
+HelloNDK.java  
 ````
 public class HelloNDK {
     static {
@@ -37,12 +34,11 @@ JNIEXPORT jstring JNICALL Java_com_mars_ndksimple_HelloNDK_sayHello
 }
 #endif
 #endif
-````
-* Step-2. 在app/src/main目录下创建jni文件，然后把第一步生成的*.h移动到该目录下，创建*.c、Android.mk、Application.mk文件，并根据*h来写.c中的代码。
-Android.mk
+````  
+* Step-2. 在app/src/main目录下创建jni文件，然后把第一步生成的*.h移动到该目录下，创建*.c、Android.mk、Application.mk文件，并根据*h来写.c中的代码。  
+Android.mk  
 
 ````
-//
 LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 LOCAL_MODULE := HelloNDK1
@@ -67,18 +63,15 @@ Java_com_mars_ndksimple_HelloNDK_sayHello(JNIEnv *env, jobject thiz)
 }
 ````
 Android.mk:[https://developer.android.google.cn/ndk/guides/android_mk]()
-Application.mk:[https://developer.android.google.cn/ndk/guides/application_mk]()
-
+Application.mk:[https://developer.android.google.cn/ndk/guides/application_mk]()  
 * Step-3. 在打开终端切换到jni目录下，使用命令：ndk-build生成so库即可
-
 
 ## 2、创建C/C++对象
 
 * Step-1：创建JNIUtil.java类
-在这个JNI接口中定义2个函数：newObject(),execute(long refer,int digit1,int digit2)。
-	* 其中newObject()函数会创建一个Adder对象，并将该对象指针传递回来给Java程序。
-	* 而execute()函数的refer参数，是用来让Java程序能将对象指针传进去给execute()函数，此时execute()就能由该指针而调用到之前newObject()函数所创建的对象。
-	
+在这个JNI接口中定义2个函数：newObject(),execute(long refer,int digit1,int digit2)。  
+	* 其中newObject()函数会创建一个Adder对象，并将该对象指针传递回来给Java程序。  
+	* 而execute()函数的refer参数，是用来让Java程序能将对象指针传进去给execute()函数，此时execute()就能由该指针而调用到之前newObject()函数所创建的对象。  
 代码如下：
 
 ```
@@ -173,13 +166,12 @@ Java_com_mars_ndksimple_JNIUtil_execute( JNIEnv *env, jclass c, jlong refer, jin
     return result;
 }
 ```
-* Step-3: 生成so库
+* Step-3: 生成so库  
 
 ## 3、从C调用Java函数
-* Step-1：在Java层创建CounterNative.java类,在其中创建4个本地方法：静态的nativeExecute()和一般的nativeSteup()、nativeExec()、nativeGetValue()；以及一个静态setValue(int value)和一个一般的setV(int value)函数。
-	* nativeExecute():调用Java层的setValue()方法，而nativeExec()和nativeGetValue()则会调用setV()方法。
-	
-代码如下
+* Step-1：在Java层创建CounterNative.java类,在其中创建4个本地方法：静态的nativeExecute()和一般的nativeSteup()、nativeExec()、nativeGetValue()；以及一个静态setValue(int value)和一个一般的setV(int value)函数。  
+	* nativeExecute():调用Java层的setValue()方法，而nativeExec()和nativeGetValue()则会调用setV()方法。  
+	* 代码如下
 
 ```
 public class CounterNative {
@@ -224,7 +216,7 @@ public class CounterNative {
 }
 ```
 * Step-2：在jni中创建Android.mk,Appliction.mk以及相应的 *.c文件，并将*.h文件移动到jni目录下。
-*.c会实现CounterNative.java类中的本地方法，并在nativeSteup()函数中负责将m_calss、m_object、m_static_mid、m_mid、m_fid存储在C模块的静态区域。
+*.c会实现CounterNative.java类中的本地方法，并在nativeSteup()函数中负责将m_calss、m_object、m_static_mid、m_mid、m_fid存储在C模块的静态区域。  
 	* 当调用nativeExecute()时，处理完本地逻辑后根据m_calss、m_static_mid调用(*env)->CallStaticVoidMethod(env,m_class,m_mid_static,sum)方法回调CounterNative.java类的setValue()方法。
 	* 当调用nativeGetValue，首先根据m_object, m_fid调用(int)(*env)->GetIntField(env, m_object, m_fid)方法，去取CounterNative.java类的全局变量number，然后计算出结果，在根据m_object,m_mid 调用(*env)->CallVoidMethod(env,m_object,m_mid,sum)回调setV()（nativeExec执行方法一样）;
 	
@@ -286,8 +278,7 @@ Java_com_mars_ndksimple_CounterNative_nativeGetValue(JNIEnv *env, jobject thiz)
 }
 
 ```
-根据.c可得出：
-
+根据.c可得出：  
 1、拿目前对象指针换取它的类ID：
 ```
 	jclass clazz = (*env)->GetObjectClass(env,thiz);
@@ -301,14 +292,10 @@ Java_com_mars_ndksimple_CounterNative_nativeGetValue(JNIEnv *env, jobject thiz)
 	(*env)->CallVoidMethod(env,m_object,m_mid,sum);
 ```
 * Step-3:生成so库
-
 ## 4、从C创建Java对象
-* Step-1: 在Java创建一个抽象类ANativeSimple，一个ActNative类，一个ResultValue类，以及一个ANativeSimple的子类NativieSimpleSub。其类图如下:
-
-![](https://github.com/marsylp/AndroidLearn/blob/master/NDK/NDKSimple01/image/UML-01.png)
-
-*  Step-2: 生成*.h文件，并创建Android.mk,Appliction.mk以及相应的 *.c文件，在*.c文件中最关键Java_com_mars_ndksimple_ANativeSimple_nativeSetup方法操作如下：
-
+* Step-1: 在Java创建一个抽象类ANativeSimple，一个ActNative类，一个ResultValue类，以及一个ANativeSimple的子类NativieSimpleSub。其类图如下:  
+![](https://github.com/marsylp/AndroidLearn/blob/master/NDK/NDKSimple01/image/UML-01.png)  
+*  Step-2: 生成*.h文件，并创建Android.mk,Appliction.mk以及相应的 *.c文件，在*.c文件中最关键Java_com_mars_ndksimple_ANativeSimple_nativeSetup方法操作如下：  
 	1、根据特定的类，得到clazz.
 	```
 	jclass rvClazz = (*env)->FindClass(env, "com/mars/ndksimple/ResultValue");
@@ -359,11 +346,8 @@ Java_com_mars_ndksimple_ActNative_nativeExec(JNIEnv *env, jclass clazz)
 *  Step-4: 在Activity中创建NativieSimpleSub对象，然后调用ActNative类的本地方法nativeExec()生成ResultValue类的对象即可调用其getValue()方法获取值。
 
 ## 4、多个Java线程进入本地函数
-每一个线程第一次进入VM调用本地函数时，VM会替它诞生一个相对映的JNIEnv对象，此对象可以存储该线程相关的数据值。如此可以避免线程因共享对象或数据而引发的线程冲突问题，也就有效提升了JNI环境下的多线程安全性。
-	
-Java程序可能会有多个线程同时先后进入同一个本地函数里执行。有些平台充许你将私有的数据存储于JNIEnv的对象里，避免共享问题，但有些平台则否。所以你的私有数据不能或不想将它存于JNIEnv对象里，而是放在一般的变量里，就必须自己注意变量共享而产生的线程安全问题了。
-
-然而JNI提供了保证线程安全的机制。
+每一个线程第一次进入VM调用本地函数时，VM会替它诞生一个相对映的JNIEnv对象，此对象可以存储该线程相关的数据值。如此可以避免线程因共享对象或数据而引发的线程冲突问题，也就有效提升了JNI环境下的多线程安全性。  
+Java程序可能会有多个线程同时先后进入同一个本地函数里执行。有些平台充许你将私有的数据存储于JNIEnv的对象里，避免共享问题，但有些平台则否。所以你的私有数据不能或不想将它存于JNIEnv对象里，而是放在一般的变量里，就必须自己注意变量共享而产生的线程安全问题了。然而JNI提供了保证线程安全的机制。
 在进入需要保护的程序时，调用:
 ```env->MonitorEnter(syncObj);```
 这样当其他线程进来时就只能停下等待。
