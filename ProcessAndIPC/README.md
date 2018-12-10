@@ -1,4 +1,4 @@
-## 认识进程与IPC架构
+## 认识进程、线程与IPC架构
 
 1.什么是IPC通信  
 IPC通信是跨越两个不同进程之间的通信。一般而言，一个Android应用程序里的各组件（如Activity、Service）都在同一个进程里执行。这种在同一个进程内的通信，又称为短程通信，意味着，两个Activity在同一个进程里执行。相对地，远程通信的意思是：两个组件分别在不同的进程里执行；两者之间是IPC通信，又称远程通信。  
@@ -8,7 +8,7 @@ IPC通信是跨越两个不同进程之间的通信。一般而言，一个Andro
 2.Android的进程概念  
 一个进程是一个独立的执行空间，不会被正在其它进程里的程序所侵犯。在Android的进程里，有一个虚拟机的对象，可执行Java代码，也引导JNI本地程序的执行，实现Java与C/C++之间的沟通。  
 每一个进程在诞生时，都会诞生一个主线程（Main Thread），以及诞生一个Looper类的对象和一个MQ（Message Queue）数据结构。每当主线程执行完实践，就会去执行Looper类。此时，不断的观察MQ的动态。  
-主线程最主要的工作就是处理UI画面的事件（Event），每当UI事件发生时，Android框架会丢信息（Message）到MQ里。主线程看到MQ有新的信息时，就取出信息，然后依据信息内容而去执行特定的函数。执行完毕，就再继续执行Looper类，不断的观察MQ的动态。  
+主线程最主要的工作就是处理UI画面的事件（Event），每当UI事件发生时，Android框架会丢信息（Message）到MQ里。主线程看到MQ有新的信息时，就取出信息，然后依据信息内容而去执行特定的函数。执行完毕，就再继续执行Looper类，不断的观察MQ的动态（进程是系统进行资源分配的独立单元）。
 
 3.设定IPC通信--使用AndroidManifest.xml文件  
 在Android框架里，一个应用程序（Application Package）通常包含有多个Java类，这些类可以在同一个进程里执行，可以在不同的进程里执行。通常，一个进程只会有一个APP，但是一个APP可以占用多个进程。
@@ -44,10 +44,106 @@ Activity调用IBinder接口的transact()函数，通过底层BinderDriver驱动�
 8.AIDL  
 AIDL（Android接口定义语言），它定义了客户端与服务使用进程间通信(IPC)时都认可的编程接口。在Android上，一个进程通常无法访问另一个进程的内存，所Android提供了AIDL来处理这个繁琐的工作。  
 注：只有充许不同应用的客户端使用IPC方式访问服务，并且想要在服务中处理多线程时，才有必要使用AIDL。如果你不需要执行跨越不同应用的并发IPC，就应该通过实现一个Binder创建接口；或者你想执行IPC，但根本不需要处理多线程，则使用Messager来实现接口。无论如何，在实现AIDL之前，请务必理解绑定服务。
+
+9.线程
+线程是CPU调度的基本单元。
+线程之间的通信:  
+
+*   a.主线程丢信息给自己：  
+	 
+	 ```
+public class ac01 extends Activity implements OnClickListener { private Handler h;
+public void onCreate(Bundle icicle) {
+//........
+h = new Handler(){
+public void handleMessage(Message msg){ setTitle((String)msg.obj);
+}}; 
+}
+public void onClick(View v) {
+switch (v.getId()) { 
+case 101:
+	h.removeMessages(0);
+	Message m = h.obtainMessage(1, 1, 1, "this is my 	message.");
+	h.sendMessage(m);
+	// 将Message送入MQ里
+	break;
+case 102:
+	finish();
+	break; 
+}
+}
+}
+	 ```
+*   b.子线程丢信息给主线程： 
+
+    ```
+public class ac01 extends Activity implements OnClickListener { 
+private Handler h;
+private Timer timer = new Timer();
+private int k=0;
+public void onCreate(Bundle icicle) { super.onCreate(icicle);
+//.........
+h = new Handler(){
+public void handleMessage(Message msg) { setTitle((String)msg.obj);
+}}; 
+}
+public void onClick(View v) {
+switch (v.getId()) {
+case 101:
+TimerTask task = new TimerTask(){
+@Override 
+public void run() {
+h.removeMessages(0);
+Message m = h.obtainMessage(1, 1, 1,
+}};
+Thread.currentThread().getName() + " : "+String.valueOf(k++));
+h.sendMessage(m);
+timer.schedule(task, 500, 1500);
+case 102:
+break;
+finish();
+break;
+}
+}
+}
+    ```
+*   c.主线程与子线程通信  
+	c-Step-1:主线程执行onCreate()函数时，创建一个子线程；
+	c-Step-2:在子线程丢run函数中创建Looper和Hander：
+	```Looper.prepare(); mHandler = new Handler{//...} Looper.loop(); ```
+	c-Step-3:主线程中就可以使用在子线程中创建的Handler对象来发送消息。
+
+	```
+public class ac01 extends Activity implements OnClickListener {
+private Thread t;
+private Handler h;
+private String str;
+public void onCreate(Bundle icicle) {
+//........
+t = new Thread(new Task()); t.start(); 
+}
+public void onClick(View v) { 
+switch(v.getId()){
+case 101:
+Message m = h.obtainMessage(1, 33, 1, null);
+h.sendMessage(m); 
+break;
+case 102: 
+setTitle(str); 
+break;
+case 103: 
+h.getLooper().quit(); 
+finish(); 
+break;
+}}
+	```
+
 ## Binder的使用
 1.一般用法  
 ![](https://github.com/marsylp/AndroidLearn/blob/master/ProcessAndIPC/MySimple/imags/BinderDifficulty_01.png)  
 2.Proxy_Stub用法  
 ![](https://github.com/marsylp/AndroidLearn/blob/master/ProcessAndIPC/MySimple/imags/BinderDifficulty_02.png)  
 3.AIDL用法  
-![](https://github.com/marsylp/AndroidLearn/blob/master/ProcessAndIPC/MySimple/imags/BinderDifficulty_03.png)
+![](https://github.com/marsylp/AndroidLearn/blob/master/ProcessAndIPC/MySimple/imags/BinderDifficulty_03.png)  
+4.Messenger  
+

@@ -37,7 +37,14 @@
             android:name=".binder_aidl.MyAIDLService"
             android:enabled="true"
             android:exported="true"
-            android:process=":myPlay2"/>
+            android:process=":myPlay2" />
+
+        <activity android:name=".binder_messenger.MessengerActivity" />
+
+        <service
+            android:name=".binder_messenger.MyMessengerService"
+            android:enabled="true"
+            android:exported="true"/>
     </application>
 
 </manifest>

@@ -30,4 +30,12 @@
         android:text="BinderAIDL"
         android:onClick="onBinderAIDLClick"
         android:layout_gravity="center"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="BinderMessenger"
+        android:onClick="onBinderMessengerClick"
+        android:layout_gravity="center"/>
 </LinearLayout>

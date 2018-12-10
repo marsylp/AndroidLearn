@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.mars.mysimple.binder_aidl.PlayerAIDLActivity;
+import com.mars.mysimple.binder_messenger.MessengerActivity;
 import com.mars.mysimple.binder_simple.MainBinderActivity;
 import com.mars.mysimple.binder_proxy_stub.BinderProxyActivity;
 
@@ -27,5 +28,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void onBinderAIDLClick(View view) {
         startActivity(new Intent(this, PlayerAIDLActivity.class));
+    }
+
+    public void onBinderMessengerClick(View view) {
+        startActivity(new Intent(this, MessengerActivity.class));
     }
 }
