@@ -146,5 +146,5 @@ break;
 3.AIDL用法  
 ![](https://github.com/marsylp/AndroidLearn/blob/master/ProcessAndIPC/MySimple/imags/BinderDifficulty_03.png)  
 4.Messenger  
-![](https://github.com/marsylp/AndroidLearn/blob/master/ProcessAndIPC/MySimple/imags/messager_1.png)
+![](https://github.com/marsylp/AndroidLearn/blob/master/ProcessAndIPC/MySimple/imags/messenger_1.png)
 
