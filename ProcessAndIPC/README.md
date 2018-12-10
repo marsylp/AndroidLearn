@@ -52,90 +52,90 @@ AIDL（Android接口定义语言），它定义了客户端与服务使用进程
 *   a.主线程丢信息给自己：  
 	 
 	 ```
-public class ac01 extends Activity implements OnClickListener { private Handler h;
-public void onCreate(Bundle icicle) {
-//........
-h = new Handler(){
-public void handleMessage(Message msg){ setTitle((String)msg.obj);
-}}; 
-}
-public void onClick(View v) {
-switch (v.getId()) { 
-case 101:
-	h.removeMessages(0);
-	Message m = h.obtainMessage(1, 1, 1, "this is my 	message.");
-	h.sendMessage(m);
-	// 将Message送入MQ里
-	break;
-case 102:
-	finish();
-	break; 
-}
-}
-}
+	public class ac01 extends Activity implements 	OnClickListener { private Handler h;
+	public void onCreate(Bundle icicle) {
+	//........
+	h = new Handler(){
+	public void handleMessage(Message msg)	{ setTitle((String)msg.obj);
+	}}; 
+	}
+	public void onClick(View v) {
+	switch (v.getId()) { 
+	case 101:
+		h.removeMessages(0);
+		Message m = h.obtainMessage(1, 1, 1, "this is my 	message.");
+		h.sendMessage(m);
+		// 将Message送入MQ里
+		break;
+	case 102:
+		finish();
+		break; 
+	}
+	}
+	}
 	 ```
 *   b.子线程丢信息给主线程： 
 
     ```
-public class ac01 extends Activity implements OnClickListener { 
-private Handler h;
-private Timer timer = new Timer();
-private int k=0;
-public void onCreate(Bundle icicle) { super.onCreate(icicle);
-//.........
-h = new Handler(){
-public void handleMessage(Message msg) { setTitle((String)msg.obj);
-}}; 
-}
-public void onClick(View v) {
-switch (v.getId()) {
-case 101:
-TimerTask task = new TimerTask(){
-@Override 
-public void run() {
-h.removeMessages(0);
-Message m = h.obtainMessage(1, 1, 1,
-}};
-Thread.currentThread().getName() + " : "+String.valueOf(k++));
-h.sendMessage(m);
-timer.schedule(task, 500, 1500);
-case 102:
-break;
-finish();
-break;
-}
-}
-}
+		public class ac01 extends Activity implements 		OnClickListener { 
+		private Handler h;
+		private Timer timer = new Timer();
+		private int k=0;
+		public void onCreate(Bundle icicle) 		{ super.onCreate(icicle);
+		//.........
+		h = new Handler(){
+		public void handleMessage(Message msg) 		{ setTitle((String)msg.obj);
+		}}; 
+		}
+		public void onClick(View v) {
+		switch (v.getId()) {
+		case 101:
+		TimerTask task = new TimerTask(){
+		@Override 
+		public void run() {
+		h.removeMessages(0);
+		Message m = h.obtainMessage(1, 1, 1,
+		}};
+		Thread.currentThread().getName() + " : 		"+String.valueOf(k++));
+		h.sendMessage(m);
+		timer.schedule(task, 500, 1500);
+		case 102:
+		break;
+		finish();
+		break;
+		}
+		}
+		}
     ```
 *   c.主线程与子线程通信  
 	c-Step-1:主线程执行onCreate()函数时，创建一个子线程；
 	c-Step-2:在子线程丢run函数中创建Looper和Hander：
-	```Looper.prepare(); mHandler = new Handler{//...} Looper.loop(); ```
+	```Looper.prepare(); mHandler = new Handler{//...} Looper.loop(); ```   
 	c-Step-3:主线程中就可以使用在子线程中创建的Handler对象来发送消息。
 
 	```
-public class ac01 extends Activity implements OnClickListener {
-private Thread t;
-private Handler h;
-private String str;
-public void onCreate(Bundle icicle) {
-//........
-t = new Thread(new Task()); t.start(); 
-}
-public void onClick(View v) { 
-switch(v.getId()){
-case 101:
-Message m = h.obtainMessage(1, 33, 1, null);
-h.sendMessage(m); 
-break;
-case 102: 
-setTitle(str); 
-break;
-case 103: 
-h.getLooper().quit(); 
-finish(); 
-break;
-}}
+	public class ac01 extends Activity implements 	OnClickListener {
+	private Thread t;
+	private Handler h;
+	private String str;
+	public void onCreate(Bundle icicle) {
+	//........
+	t = new Thread(new Task()); t.start(); 
+	}
+	public void onClick(View v) { 
+	switch(v.getId()){
+	case 101:
+	Message m = h.obtainMessage(1, 33, 1, null);
+	h.sendMessage(m); 
+	break;
+	case 102: 
+	setTitle(str); 
+	break;
+	case 103: 
+	h.getLooper().quit(); 
+	finish(); 
+	break;
+	}}
 	```
 
 ## Binder的使用
