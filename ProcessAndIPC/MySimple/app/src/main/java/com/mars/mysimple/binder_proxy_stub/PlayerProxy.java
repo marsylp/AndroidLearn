@@ -1,15 +1,16 @@
 package com.mars.mysimple.binder_proxy_stub;
 
+import android.os.Binder;
 import android.os.IBinder;
 import android.os.Parcel;
 import android.os.RemoteException;
 
 public class PlayerProxy implements IPlayer {
-    private IBinder mIBinder;
+    private Binder mIBinder;
     private String mState;
 
-    public PlayerProxy(IBinder IBinder) {
-        mIBinder = IBinder;
+    public PlayerProxy(Binder iBinder) {
+        mIBinder = iBinder;
     }
 
     @Override

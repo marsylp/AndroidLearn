@@ -10,6 +10,8 @@ import com.mars.mysimple.binder_aidl.PlayerAIDLActivity;
 import com.mars.mysimple.binder_messenger.MessengerActivity;
 import com.mars.mysimple.binder_simple.MainBinderActivity;
 import com.mars.mysimple.binder_proxy_stub.BinderProxyActivity;
+import com.mars.mysimple.binderpool.BinderPoolActivity;
+import com.mars.mysimple.socket.TCPClientActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,5 +36,13 @@ public class MainActivity extends AppCompatActivity {
 
     public void onBinderMessengerClick(View view) {
         startActivity(new Intent(this, MessengerActivity.class));
+    }
+
+    public void onBinderPoolClick(View view) {
+        startActivity(new Intent(this, BinderPoolActivity.class));
+    }
+
+    public void onTCPClick(View view) {
+        startActivity(new Intent(this, TCPClientActivity.class));
     }
 }
